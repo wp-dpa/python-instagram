@@ -1,7 +1,6 @@
 from .helper import timestamp_to_datetime
 import six
 
-
 class ApiModel(object):
 
     @classmethod
@@ -10,6 +9,8 @@ class ApiModel(object):
         if entry is None:
             return ""
         entry_str_dict = dict([(str(key), value) for key, value in entry.items()])
+        if entry_str_dict.get('id') == '0':
+            entry_str_dict.pop('id')
         return cls(**entry_str_dict)
 
     def __repr__(self):
@@ -96,7 +97,7 @@ class Media(ApiModel):
 
         new_media.comment_count = entry['comments']['count']
         new_media.comments = []
-        for comment in entry['comments']['data']:
+        for comment in entry['comments'].get('data', []):
             new_media.comments.append(Comment.object_from_dictionary(comment))
 
         new_media.users_in_photo = []
