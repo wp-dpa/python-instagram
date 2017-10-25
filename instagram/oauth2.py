@@ -121,10 +121,16 @@ class OAuth2Request(object):
         self.api = api
 
     def _generate_sig(self, endpoint, params, secret):
-        sig = endpoint
+        def encode_str(s):
+            if hasattr(s, 'decode'):
+                return s.decode('utf-8')
+            return s
+        sig_params = []
+        sig_params.append(encode_str(endpoint))
         for key in sorted(params.keys()):
-            sig += '|%s=%s' % (key, params[key])
-        return hmac.new(secret.encode(), sig.encode(), sha256).hexdigest()
+            sig_params.append(u'{}={}'.format(encode_str(key), encode_str(params[key])))
+        sig = u'|'.join(sig_params)
+        return hmac.new(secret.encode('utf-8'), sig.encode('utf-8'), sha256).hexdigest()
 
     def url_for_get(self, path, parameters):
         return self._full_url_with_params(path, parameters)
