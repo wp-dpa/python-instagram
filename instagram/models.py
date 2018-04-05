@@ -213,6 +213,12 @@ class User(ApiModel):
 
     def __init__(self, id=None, *args, **kwargs):
         self.id = id if id is not None else '99999999999999999'
+        if 'full_name' not in kwargs:
+            kwargs['full_name'] = kwargs.get('username')
+        for k in ['profile_picture', 'bio', 'website']:
+            # Privacy privacy privacy
+            if k not in kwargs:
+                kwargs[k] = ''
         for key, value in six.iteritems(kwargs):
             setattr(self, key, value)
 
