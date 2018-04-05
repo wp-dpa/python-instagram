@@ -211,8 +211,8 @@ class Location(ApiModel):
 
 class User(ApiModel):
 
-    def __init__(self, id, *args, **kwargs):
-        self.id = id
+    def __init__(self, id=None, *args, **kwargs):
+        self.id = id if id is not None else '99999999999999999'
         for key, value in six.iteritems(kwargs):
             setattr(self, key, value)
 
